@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Ridicilious Input</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+            background-color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #222;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+        .misleading-btn, .real-btn, .tricky-btn {
+            font-size: 18px;
+            padding: 15px 30px;
+            border: 2px solid transparent;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 5px;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.5s ease;
+        }
+
+        .misleading-btn {
+            background: linear-gradient(135deg, #00bfae, #ff6a00); /* Gradient effect */
+            animation: pulse 2s infinite alternate;
+        }
+
+        .misleading-btn:hover {
+            background: linear-gradient(135deg, #ff6a00, #00bfae);
+            transform: scale(1.1) rotate(5deg); /* Slight rotate and scale on hover */
+        }
+
+        .misleading-btn:active {
+            background-color: #ff6a00;
+            box-shadow: 0 0 15px #ff6a00;
+        }
+
+        .real-btn {
+            background-color: grey;
+            box-shadow: 0 0 20px #888888;
+        }
+
+        .real-btn:hover {
+            background-color: darkgrey;
+            transform: scale(1.05); /* Increases size when hovered */
+        }
+
+        .real-btn:active {
+            background-color: #cccccc;
+            box-shadow: 0 0 10px #cccccc inset;
+        }
+
+        .tricky-btn {
+            background: #ff4747;
+            position: relative;
+            z-index: 10;
+            transition: all 0.4s ease-out;
+        }
+
+        .tricky-btn:hover {
+            transform: translateX(150px) rotate(45deg);
+            background: #d43f3f;
+        }
+
+        .tricky-btn:active {
+            transform: rotate(0deg) translateX(0px);
+            background: #ff4747;
+        }
+
+        .real-btn, .misleading-btn, .tricky-btn {
+            display: inline-block;
+            min-width: 200px;
+        }
+
+        /* Button Transformations for "Don't Click Me" */
+        .real-btn.clicked {
+            background: #8e44ad;
+            transform: scale(1.2) rotate(15deg);
+            box-shadow: 0 0 25px #8e44ad;
+            animation: bounce 1s ease-out;
+        }
+
+        .real-btn.clicked::after {
+            content: "You Clicked Me!";
+            font-size: 16px;
+            color: yellow;
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        @keyframes bounce {
+            0% {
+                transform: scale(1.2) translateY(0);
+            }
+            50% {
+                transform: scale(1.2) translateY(-20px);
+            }
+            100% {
+                transform: scale(1.2) translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* Style for the confusing question */
+        .question {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #ff6a00;
+            background-color: #222;
+            padding: 20px;
+            border-radius: 5px;
+            width: 80%;
+            margin: 20px auto;
+        }
+
+        .question input {
+            margin-top: 15px;
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .question h3 {
+            margin-top: 15px;
+            color: yellow;
+            font-weight: bold;
+        }
+
+        /* Congratulations message */
+        .congrats-message {
+            display: none;
+            font-size: 24px;
+            font-weight: bold;
+            color: #2ecc71;
+            background-color: #222;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            text-align: center;
+            width: 80%;
+            margin: 20px auto;
+            border: 3px solid #2ecc71;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Try to Click a Button!</h1>
+        <div class="container">
+            <button class="misleading-btn">Click Me</button>
+            <button class="real-btn" id="dontClickMe">Don't Click Me</button>
+            <button class="tricky-btn" id="uncatchableBtn">Try to Catch Me!</button>
+        </div>
+        <div id="confusingQuestion" class="question" style="display: none;">
+            <p>What is always coming but never arrives?</p>
+            <input type="text" id="answerInput" placeholder="Type your answer...">
+            <h3 id="errorMessage" style="display: none;">Incorrect, try again!</h3>
+        </div>
+        <div id="congratsMessage" class="congrats-message">
+            Wow, you finally arrived at the right answer unlike tomorrow! 🥳🎉
+        </div>
+    </div>
+
+    <script>
+        // Function to make the "Try to Catch Me!" button uncatchable
+        const uncatchableBtn = document.getElementById('uncatchableBtn');
+
+        function moveButton() {
+            const randomX = Math.floor(Math.random() * window.innerWidth);
+            const randomY = Math.floor(Math.random() * window.innerHeight);
+
+            uncatchableBtn.style.position = 'absolute';
+            uncatchableBtn.style.left = `${randomX}px`;
+            uncatchableBtn.style.top = `${randomY}px`;
+        }
+
+        uncatchableBtn.addEventListener('mouseenter', function() {
+            moveButton();
+        });
+
+        // Add confusing question when the "Don't Click Me" button is clicked
+        const dontClickMeBtn = document.getElementById('dontClickMe');
+        const confusingQuestionDiv = document.getElementById('confusingQuestion');
+        const answerInput = document.getElementById('answerInput');
+        const errorMessage = document.getElementById('errorMessage');
+        const congratsMessage = document.getElementById('congratsMessage');
+
+        dontClickMeBtn.addEventListener('click', function() {
+            this.classList.add('clicked');
+            confusingQuestionDiv.style.display = 'block';  // Show the confusing question immediately
+        });
+
+        answerInput.addEventListener('input', function() {
+            const answer = answerInput.value.trim().toLowerCase();
+            if (answer === 'tomorrow') {
+                errorMessage.style.display = 'none';
+                congratsMessage.style.display = 'block';  // Show the congrats message
+                confusingQuestionDiv.style.display = 'none';  // Hide the question
+            } else if (answer.length > 0) {
+                errorMessage.style.display = 'block';
+                // Make the question font size bigger
+                confusingQuestionDiv.style.fontSize = `${18 + answer.length / 2}px`; // Increase size with each wrong input
+            }
+        });
+    </script>
+</body>
+</html>
